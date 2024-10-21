@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, AlertTitle, Button, Collapse, IconButton, TextField,} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import './App.css';
@@ -13,9 +13,41 @@ function App() {
   const [open, setOpen] = React.useState(false);
   const authKey = process.env.REACT_APP_AUTH_KEY; // Add your auth key here
 
+  const [deliveryStatus, setDeliveryStatus] = useState('')
+
+
+  useEffect(() => {
+    // Connect to the WebSocket server (Backend running on localhost:8000)
+    const ws = new WebSocket('ws://localhost:8000');
+
+    // Listen for WebSocket messages from the backend
+    ws.onmessage = (event) => {
+      const status = JSON.parse(event.data);  // Parse the incoming status message
+      console.log('Delivery status received from backend:', status);
+      setDeliveryStatus(JSON.stringify(status)); // Update delivery status in state
+      setAlertTitle('Delivery Status');
+      setAlertMessage('Delivery Status Received!');
+      setAlertType('success');
+    };
+
+    ws.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      ws.close(); // Clean up WebSocket connection when component unmounts
+    };
+  }, []);
+
+
   // Handle the form submission
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
+    
 
     // Prepare the request body
     const data = {
@@ -23,7 +55,7 @@ function App() {
       "msisdn": phoneNumber,
       "message": message,
       "sender_id": "Test",
-      "callback_url": "https://f369-154-160-0-198.ngrok-free.app"
+      "callback_url": "https://e5df-154-160-0-196.ngrok-free.app"
     };
 
     try {
@@ -68,7 +100,6 @@ function App() {
     <div className="split-background">
       <div className="container">
         <div className="text">Welcome To My SMS App</div>
-
         <form onSubmit={handleSubmit} className="sms-form">
           <TextField
             label="Phone Number"
@@ -101,6 +132,7 @@ function App() {
               </IconButton>}>
               <AlertTitle>{alertTitle}</AlertTitle>
               {alertMessage}
+              {deliveryStatus}
             </Alert>
           </Collapse>
 
