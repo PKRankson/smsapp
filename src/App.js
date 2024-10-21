@@ -16,11 +16,11 @@ function App() {
   const [deliveryStatus, setDeliveryStatus] = useState('')
 
 
-// Connect to the WebSocket server
   useEffect(() => {
-    
+    // Connect to the WebSocket server (Backend running on localhost:8000)
     const ws = new WebSocket('ws://localhost:8000');
 
+    // Listen for WebSocket messages from the backend
     ws.onmessage = (event) => {
       const status = JSON.parse(event.data);  // Parse the incoming status message
       console.log('Delivery status received from backend:', status);
@@ -39,15 +39,17 @@ function App() {
     };
 
     return () => {
-      ws.close(); 
+      ws.close(); // Clean up WebSocket connection when component unmounts
     };
   }, []);
 
 
   // Handle the form submission
   const handleSubmit = async (event) => {
-    event.preventDefault(); 
+    event.preventDefault(); // Prevent the form from refreshing the page
     
+
+    // Prepare the request body
     const data = {
       "key": authKey,
       "msisdn": phoneNumber,
@@ -65,27 +67,29 @@ function App() {
         body: JSON.stringify(data),
       });
 
+      // Check if the response is successful
       if (response.ok) {
         const result = await response.json();
         setAlertTitle('Delivered');
-        setAlertMessage(`SMS sent successfully! ${result.job_id} ${result.msisdn} ${result.status} ` ); 
-        setAlertType('success'); 
+        setAlertMessage(`SMS sent successfully! ${result.job_id} ${result.msisdn} ${result.status} ` ); // Set success message
+        setAlertType('success'); // Set alert type to success
         setOpen(true);
-        console.log(result.job_id); 
+        console.log(result.job_id); // Log the response from the server
       } else {
         setAlertTitle('Failed');
         setAlertMessage('Failed to send SMS. Please try again!');
-        setAlertType('error'); 
+        setAlertType('error'); // Set alert type to error
         setOpen(true);
       }
     } catch (error) {
       console.error('Error:', error);
       setAlertTitle('Error');
       setAlertMessage('An error occurred. Please try again.');
-      setAlertType('error'); 
+      setAlertType('error'); // Set alert type to error
       setOpen(true);
     }
 
+    // Clear input fields
     setPhoneNumber('');
     setMessage('');
   };
