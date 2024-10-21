@@ -1,0 +1,95 @@
+import React, { useState } from 'react';
+import './App.css';
+
+function App() {
+  // State variables for phone number, message, alert, and alert type
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [message, setMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState(''); // 'success' or 'error'
+  const authKey = "e55yt7m!5#pw!lgikt3r!phr5x7_2u29i93nj#ajevz(9!dw8c#fue7)7j0l3oxc"; // Add your auth key here
+
+  // Handle the form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent the form from refreshing the page
+
+    // Prepare the request body
+    const data = {
+      "key": authKey,
+      "msisdn": phoneNumber,
+      "message": message,
+      "sender_id": "NALO"
+    };
+
+    try {
+      const response = await fetch('https://sms.nalosolutions.com/smsbackend/Resl_Nalo/send-message/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        const result = await response.json();
+        setAlertMessage('SMS sent successfully!'); // Set success message
+        setAlertType('success'); // Set alert type to success
+        setShowAlert(true); // Show the alert
+        console.log(result); // Log the response from the server
+      } else {
+        setAlertMessage('Failed to send SMS. Please try again.');
+        setAlertType('error'); // Set alert type to error
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setAlertMessage('An error occurred. Please try again.');
+      setAlertType('error'); // Set alert type to error
+      setShowAlert(true);
+    }
+  };
+
+  // Function to hide the alert after a few seconds
+  const hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  return (
+    <div className="split-background">
+      <div className="left-side">
+        <div className="text">Welcome To My SMS App</div>
+        
+        <form onSubmit={handleSubmit} className="sms-form">
+          <input
+            type="text"
+            placeholder="Enter phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            required
+          />
+          <textarea
+            placeholder="Enter your message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="button">
+            Send Message
+          </button>
+
+          {showAlert && (
+          <div className={`alert ${alertType}`} onClick={hideAlert}>
+            {alertMessage}
+          </div>
+        )}
+        </form>
+      </div>
+      <div className="right-side"></div>
+    </div>
+  );
+}
+
+export default App;
