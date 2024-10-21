@@ -45,7 +45,7 @@ function App() {
         console.log(result.job_id); // Log the response from the server
       } else {
         setAlertTitle('Failed');
-        setAlertMessage('Failed to send SMS. Please try again.');
+        setAlertMessage('Failed to send SMS. Please try again!');
         setAlertType('error'); // Set alert type to error
         setOpen(true);
       }
