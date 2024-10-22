@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     // Connect to the WebSocket server (Backend running on localhost:8000)
-    const ws = new WebSocket('ws://localhost:8000');
+    const ws = new WebSocket('wss://smsapp-3enu.onrender.com/');
 
     // Listen for WebSocket messages from the backend
     ws.onmessage = (event) => {
