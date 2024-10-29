@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, AlertTitle, Button, Collapse, IconButton, TextField,} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 import './App.css';
 
 function App() {
@@ -96,56 +97,60 @@ function App() {
   
 
   return (
-    
-    <div className="split-background">
-      <div className="container">
-        <div className="text">Welcome To My SMS App</div>
-        <form onSubmit={handleSubmit} className="sms-form">
-          <TextField
-            label="Phone Number"
-            variant="outlined"
-            fullWidth
-            border
-            margin="normal"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            required
-          />
-          <TextField
-            label="Message"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            multiline
-            rows={4}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-          />
-          <Collapse in ={open}>
-            <Alert severity={alertType} style={{ marginTop: '10px', marginBottom: '15px' }} action={
-              <IconButton aria-label="close" color="inherit" size="small"
-                onClick={() => {
-                  setOpen(false);
-                }}>
-                  <CloseIcon fontsize="inherit"/>
-              </IconButton>}>
-              <AlertTitle>{alertTitle}</AlertTitle>
-              {alertMessage}
-              {deliveryStatus}
-            </Alert>
-          </Collapse>
+    <div>
+        <div className="split-background">
+          <div className="text">Start Messaging</div>
+          <form onSubmit={handleSubmit} className="sms-form">
+            <TextField
+              label="Contact Number"
+              placeholder="Recipient's Contact"
+              variant="standard"
+              fullWidth
+              border
+              margin="normal"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+            />
+            <TextField
+              label="Message"
+              placeholder='Your message here'
+              variant="standard"
+              fullWidth
+              margin="normal"
+              style={{ marginTop: '40px'}}
+              multiline
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+            <Collapse in ={open}>
+              <Alert severity={alertType} style={{ marginTop: '50px', marginBottom: '20px', minHeight: '150px' }} action={
+                <IconButton aria-label="close" color="inherit" size="small"
+                  onClick={() => {
+                    setOpen(false);
+                  }}>
+                    <CloseIcon fontsize="inherit"/>
+                </IconButton>}>
+                <AlertTitle>{alertTitle}</AlertTitle>
+                {alertMessage}
+                {deliveryStatus}
+              </Alert>
+            </Collapse>
 
-          <Button type="submit" variant="outlined">
-            Send Message
-          </Button>
-        </form>
+            <Button type="submit" variant="contained" endIcon={<SendIcon/>} sx={{ marginTop: '40px', height: '55px', borderRadius:'40px', backgroundColor: '#2a98ec', '&:hover': {backgroundColor: '#176aa8'},}}>
+              Send Message
+            </Button>
+          </form>
+        </div>
+      
+      <div className="welcome">CONNECT</div>
+      <div className="right-content">
+        
       </div>
-      <div className="right-side"></div>
-      <div className="background"></div>
     </div>
+   
   );
-
 
 }
 
